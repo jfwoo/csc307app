@@ -40,19 +40,22 @@ const findUserByNameandJob = (name, job) => {
   );
 };
 
-
 const findUserById = (id) =>
   users["users_list"].find((user) => user["id"] === id);
 
 const addUser = (user) => {
-  users["users_list"].push(user);
-  return user;
+  const NewUser = { ...user, id: generateID()};
+  users["users_list"].push(NewUser);
+  return NewUser;
 };
 
 const deleteUser = (id) => {
   const index = users["users_list"].findIndex((user) => user['id'] === id);
   users["users_list"].splice(index,1);
   return;
+};
+const generateID = () => {
+  return Math.random().toString(36).substr(2, 6);
 };
 
 app.use(cors());
@@ -83,8 +86,8 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
+  const addedUser = addUser(userToAdd);
+  res.status(201).send(addedUser);
 });
 
 app.delete("/users/:id", (req, res) => {
@@ -95,7 +98,7 @@ app.delete("/users/:id", (req, res) => {
   }
   else {
     deleteUser(id);
-    res.send();
+    res.sendStatus(204);
   }
 });
 

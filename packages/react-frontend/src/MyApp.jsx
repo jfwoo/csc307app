@@ -13,16 +13,33 @@ function MyApp() {
       .catch((error) => { console.log(error); });
   }, [] );
 
-  function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index;
+  function removeOneCharacter(id, index) {
+    fetch(`http://localhost:8000/users/${id}`, {
+      method: 'DELETE',
+    })
+    .then((resposne) => {
+      if (resposne.status === 204) {
+        const updated = characters.filter((character, i) => i !== index);
+        setCharacters(updated);
+      }
+     else {
+      throw new Error("Failed to delete user");
+    }
+  })
+    .catch((error) => {
+      console.log(error);
     });
-    setCharacters(updated);
   }
 
   function updateList(person) { 
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
+    .then((response) => {
+      if (response.status === 201) {
+        return response.json(); 
+      }
+      throw new Error("Failed to add user");
+    })
+      .then((addedUser) => setCharacters([...characters, addedUser]))
       .catch((error) => {
         console.log(error);
       })
@@ -49,7 +66,7 @@ function MyApp() {
     <div className="container">
       <Table 
         characterData={characters}
-        removeCharacter={removeOneCharacter} 
+        removeCharacter={(id, index) => removeOneCharacter(id, index)} 
       />
       <Form handleSubmit={updateList} />
     </div>
