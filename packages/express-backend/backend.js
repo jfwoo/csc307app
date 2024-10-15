@@ -1,5 +1,6 @@
 // backend.js
 import express from "express";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
@@ -54,6 +55,7 @@ const deleteUser = (id) => {
   return;
 };
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/users", (req, res) => {
@@ -64,7 +66,8 @@ app.get("/users", (req, res) => {
     result = { users_list: result };
     res.send(result);
   } else {
-    res.status(400).send("Both name and job must be provided");
+    res.send(users);
+    //res.status(400).send("Both name and job must be provided");
   }
 });
 
