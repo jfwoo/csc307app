@@ -9,12 +9,12 @@ function MyApp() {
   useEffect(() => {
     fetchUsers()
       .then((res) => res.json())
-      .then((json) => setCharacters(json["users_list"]))
+      .then((json) => setCharacters(json.users_list))
       .catch((error) => { console.log(error); });
   }, [] );
 
-  function removeOneCharacter(id, index) {
-    fetch(`http://localhost:8000/users/${id}`, {
+  function removeOneCharacter(_id, index) {
+    fetch(`http://localhost:8000/users/${_id}`, {
       method: 'DELETE',
     })
     .then((resposne) => {
@@ -51,7 +51,7 @@ function MyApp() {
   }
 
   function postUser(person) {
-    const promise = fetch("Http://localhost:8000/users", {
+    const promise = fetch("http://localhost:8000/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ function MyApp() {
     <div className="container">
       <Table 
         characterData={characters}
-        removeCharacter={(id, index) => removeOneCharacter(id, index)} 
+        removeCharacter={(_id, index) => removeOneCharacter(_id, index)} 
       />
       <Form handleSubmit={updateList} />
     </div>
